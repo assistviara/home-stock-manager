@@ -44,3 +44,16 @@ def push_message():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+@app.route("/webhook", methods=["POST"])
+def webhook():
+    try:
+        data = request.get_json()
+        print("Webhookイベント:", data)
+        events = data.get("events", [])
+        for event in events:
+            user_id = event.get("source", {}).get("userId")
+            print("LINE_USER_ID:", user_id)
+        return "ok"
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
